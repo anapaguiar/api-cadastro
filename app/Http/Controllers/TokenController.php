@@ -13,12 +13,15 @@ class TokenController extends Controller {
     {
         //campos e regras de acesso
         $this->validate($request, [
-            'email' => 'required|email', //obrigatorio e valido
-            'password' => 'required'
+            'email' => 'required|email',
+            'password' => 'required',
+            'cpf' => 'required'
         ]);
 
         //pega o usuario do request
-        $usuario = User::where('email', $request->email)->first();
+        $usuario = User::where(
+            'email', $request->email)
+            ->first();
         
         //confere o usuario e a senha
         if (is_null($usuario) 
@@ -27,7 +30,6 @@ class TokenController extends Controller {
                 return response()->json('Usuario ou senha invalidos!', 401);
             }
 
-        //passar os dados que quiser, os mesmo passados no provider
         $token = JWT::encode(
             ['email'=> $request->email], 
             env('JWT_KEY'));
