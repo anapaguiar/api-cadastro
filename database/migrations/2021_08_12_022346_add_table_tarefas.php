@@ -21,7 +21,7 @@ class AddTableTarefas extends Migration
 
             $table->foreign('id_usuario')
             ->references('id')
-            ->on('usuarios');
+            ->on('usuarios')->onDelete('cascade');
             
             $table->timestamps();
         });

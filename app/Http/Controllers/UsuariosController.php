@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CriadorDeUsuario;
+use App\Tarefa;
+
+use function PHPUnit\Framework\isEmpty;
 
 class UsuariosController extends Controller
 {
@@ -63,21 +67,14 @@ class UsuariosController extends Controller
 
     public function destroy(int $id)
     {
-        /*
-        $user = Usuario::find($id);
-        //quando eu descobrir como listar a qtd de tarefas, eu faco o destroy.
-        $recursos = Usuario::where($user->tarefas > 1 );
-        $recursos->tarefas->each(function (Tarefa $tarefa) { //vai pegar cada episodio
-                $tarefa->delete();
-        });
+        $removido = Usuario::find($id);
 
-        $removido = Usuario::destroy($id);
-        if (Tarefa::find($id)) {
-            return response()->json([
-                'erro' => 'Recurso nao encontrado'
-            ], 404);
+        if (!empty($removido)){
+            return response()
+            ->json('existem tarefas vinculadas ao usuario', 404);
         }
-
-        return response()->json('', 204); */
+            $removido->delete();
+            return response()
+                ->json('ok', 200);
     }
 }

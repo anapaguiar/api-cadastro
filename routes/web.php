@@ -18,6 +18,8 @@ $router->group(['prefix' => 'api', 'middleware'=> 'auth'], function () use ($rou
     $router->group(['prefix' => 'tarefa'], function () use ($router) {
         $router->get('{id_usuario}/tarefas', 'TarefasController@index');
         $router->post('{id}','TarefasController@store');
+        $router->put('{id}', 'TarefasController@update');
+        $router->delete('{id}', 'TarefasController@destroy');
     });
 });
 

@@ -19,7 +19,7 @@ class TarefasController extends Controller
         }
 
         return response()->json([
-            'erro' => 'Recurso nao encontrado'], 
+            'Nao existem tarefas para este usuario.'], 
             status:404
         );
     }
@@ -38,4 +38,35 @@ class TarefasController extends Controller
       return response()->json('Usuario nao correspondente.', 404);
 
     }
+
+    public function update(int $id, Request $request)
+    {
+        $tarefa = Tarefa::find($id);
+        if (is_null($tarefa))
+        {
+            return response()->json([
+                'erro' => 'Tarefa nao encontrada.'], 
+                status:404
+            );
+        }
+
+        $tarefa->fill($request->only('description', 'status'));
+        $tarefa->save();
+    
+        return $tarefa;
+    }
+
+    public function destroy (int $id)
+    {
+        $removidos = Tarefa::destroy($id);
+        
+        if ($removidos === 0) {
+            return response()->json([
+                'erro' => 'A tarefa nao foi encontrada.'
+            ], 404);
+        }
+
+        return response()->json('Tarefa deletada', 204);
+    }
+
 }
