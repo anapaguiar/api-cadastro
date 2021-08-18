@@ -40,6 +40,7 @@ class UsuariosController extends Controller
 
     public function show(int $id){
         $usuario = Usuario::find($id);
+        
         if(is_null($usuario)){
             return response()->json('Usuario nao encontrado.', status:404);
         }
@@ -47,6 +48,19 @@ class UsuariosController extends Controller
         return response()->json($usuario);
     }
     
+    public function showStatusTarefa (int $id, int $status)
+    {
+        if (($id === Auth::user()->id))
+        {
+            $tarefa = Tarefa::query()
+            ->where('status', $status)
+            ->get();
+
+            return $tarefa;       
+        }
+        
+        return response('Usuario nao correspondente.',404);
+    }
 
     public function update(int $id, Request $request)
     {

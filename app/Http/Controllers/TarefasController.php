@@ -24,8 +24,6 @@ class TarefasController extends Controller
         );
     }
 
-
-
     public function store (int $id, Request $request){
 
         if ($id === Auth::user()->id){
@@ -42,12 +40,10 @@ class TarefasController extends Controller
     public function update(int $id, Request $request)
     {
         $tarefa = Tarefa::find($id);
-        if (is_null($tarefa))
-        {
-            return response()->json([
-                'erro' => 'Tarefa nao encontrada.'], 
-                status:404
-            );
+        
+        if(is_null($tarefa)){
+            return response()
+            ->json('Tarefa nao encontrada.', status:404);
         }
 
         $tarefa->fill($request->only('description', 'status'));
@@ -69,4 +65,13 @@ class TarefasController extends Controller
         return response()->json('Tarefa deletada', 204);
     }
 
+    public function show(int $id){
+        
+        $tarefa = Tarefa::find($id);
+        if(is_null($tarefa)){
+            return response()->json('Tarefa nao encontrada.', status:404);
+        }
+
+        return response()->json($tarefa);
+    }
 }
