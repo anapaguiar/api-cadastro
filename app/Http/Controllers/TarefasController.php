@@ -15,11 +15,13 @@ class TarefasController extends Controller
        
         if ($id_usuario === Auth::user()->id)
         {
-            return Tarefa::paginate($request->per_page);
+            return Tarefa::query()
+                ->where('id_usuario', $id_usuario)
+                ->paginate($request->per_page);
         }
 
         return response()->json([
-            'Nao existem tarefas para este usuario.'], 
+            'Usuario nao correspondente.'], 
             status:404
         );
     }
@@ -57,17 +59,16 @@ class TarefasController extends Controller
         $removidos = Tarefa::destroy($id);
         
         if ($removidos === 0) {
-            return response()->json([
-                'erro' => 'A tarefa nao foi encontrada.'
-            ], 404);
+            return response()->json('Tarefa nao foi encontrada.', 404);
         }
 
-        return response()->json('Tarefa deletada', 204);
+        return response()->json('Tarefa excluida com sucesso!', 200);
     }
 
     public function show(int $id){
         
         $tarefa = Tarefa::find($id);
+        
         if(is_null($tarefa)){
             return response()->json('Tarefa nao encontrada.', status:404);
         }

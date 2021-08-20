@@ -9,11 +9,11 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api', 'middleware'=> 'auth'], function () use ($router){
     $router->group(['prefix' => 'usuario'], function () use ($router){
         $router->get('', 'UsuariosController@index');
-        $router->post('', 'UsuariosController@store');
+        $router->post('', 'UsuariosController@store');  
         $router->get('{id}', 'UsuariosController@show');
         $router->put('{id}', 'UsuariosController@update');
         $router->delete('{id}', 'UsuariosController@destroy');
-        $router->get('{id}/{status}', 'UsuariosController@showStatusTarefa');
+        $router->get('{id_usuario}/{status}', 'UsuariosController@showStatusTarefa');
     });
     
     $router->group(['prefix' => 'tarefa'], function () use ($router) {

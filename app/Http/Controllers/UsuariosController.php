@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Tarefa;
 use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\CriadorDeUsuario;
-use App\Tarefa;
+use Illuminate\Support\Facades\Hash;
 
 use function PHPUnit\Framework\isEmpty;
+use App\Http\Controllers\CriadorDeUsuario;
 
 class UsuariosController extends Controller
 {
@@ -18,22 +19,14 @@ class UsuariosController extends Controller
     
     }
 
-    public function store(Request $request, CriadorDeUsuario $criadorDeUsuario)
+    public function store(Request $request)
     {
-       /* $usuario = $criadorDeUsuario->criarUsuario(
-            $request->id, 
-            $request->qtd_tarefas, 
-            $request->status
-        ); 
-        return response()
-            ->json(
-                Usuario::create($usuario),
-                status:201
-            );*/
-        
+        $data = $request->all();
+        $data['password'] = Hash::make($data['password']);
+
        return response()
         ->json(
-            Usuario::create($request->all()), 
+            Usuario::create($data), 
             status:201
         );
     }
@@ -48,11 +41,12 @@ class UsuariosController extends Controller
         return response()->json($usuario);
     }
     
-    public function showStatusTarefa (int $id, int $status)
+    public function showStatusTarefa (int $id_usuario, int $status)
     {
-        if (($id === Auth::user()->id))
+        if (($id_usuario == Auth::user()->id))
         {
             $tarefa = Tarefa::query()
+            ->where('id_usuario', $id_usuario)
             ->where('status', $status)
             ->get();
 
@@ -81,14 +75,20 @@ class UsuariosController extends Controller
 
     public function destroy(int $id)
     {
-        $removido = Usuario::find($id);
+        $removido = Usuario::find($id);  
 
-        if (!empty($removido)){
-            return response()
-            ->json('existem tarefas vinculadas ao usuario', 404);
-        }
+        $tarefa = Tarefa::query()
+            ->where('id_usuario', $id) 
+            ->get('status');
+
+        if (isEmpty($tarefa)){
             $removido->delete();
             return response()
-                ->json('ok', 200);
+                ->json('Usuario removido com sucesso.', 200);
+        }
+
+         return response()
+        ->json('existem tarefas vinculadas ao usuario', 404);
+        
     }
 }
