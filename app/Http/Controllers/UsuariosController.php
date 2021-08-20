@@ -78,17 +78,18 @@ class UsuariosController extends Controller
         $removido = Usuario::find($id);  
 
         $tarefa = Tarefa::query()
-            ->where('id_usuario', $id) 
-            ->get('status');
-
-        if (isEmpty($tarefa)){
+            ->where('id_usuario', $id)
+            ->get('status')->first();
+        
+        if (is_null($tarefa))
+        {
             $removido->delete();
             return response()
                 ->json('Usuario removido com sucesso.', 200);
         }
-
-         return response()
-        ->json('existem tarefas vinculadas ao usuario', 404);
         
+         return response()
+            ->json('existem tarefas vinculadas ao usuario', 404);
+
     }
 }
